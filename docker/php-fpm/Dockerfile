@@ -1,7 +1,8 @@
 FROM php:8.1-fpm-alpine
 
-ARG UID=1000
-ARG GID=1000
+# Use your user and group IDs to avoid permissions issue
+ARG UID=1001
+ARG GID=1001
 
 RUN set -eux; \
     apk add --update --no-cache shadow; \
@@ -49,7 +50,7 @@ RUN set -eux; \
     apk del --no-network .dependies; \
     rm -rf /var/cache/apk/*; \
     # composer
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=2.0.14
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=2.4.11
 
 ARG XDEBUG_VERSION=3.1.3
 RUN set -eux; \
@@ -58,7 +59,6 @@ RUN set -eux; \
     docker-php-ext-enable xdebug; \
     apk del .build-deps
 
-COPY bin/. /usr/local/bin/
 COPY etc/docker-php-config.ini /usr/local/etc/php/conf.d/
 COPY etc/php-fpm.conf /usr/local/etc/php-fpm.d/
 

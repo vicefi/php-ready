@@ -11,16 +11,16 @@
 /app/spool/*
 
 # Cache, session files and logs (Symfony3)
-/var/cache/*
-/var/logs/*
-/var/sessions/*
-!var/cache/.gitkeep
-!var/logs/.gitkeep
-!var/sessions/.gitkeep
+/app/var/cache/*
+/app/var/logs/*
+/app/var/sessions/*
+!app/var/cache/.gitkeep
+!app/var/logs/.gitkeep
+!app/var/sessions/.gitkeep
 
 # Logs (Symfony4)
-/var/log/*
-!var/log/.gitkeep
+/app/var/log/*
+!/app/var/log/.gitkeep
 
 # Parameters
 /app/config/parameters.yml
@@ -28,15 +28,15 @@
 
 # Managed by Composer
 /app/bootstrap.php.cache
-/var/bootstrap.php.cache
-/bin/*
-!bin/console
-!bin/symfony_requirements
-/vendor/
+/app/var/bootstrap.php.cache
+/app/bin/*
+!/app/bin/console
+!/app/bin/symfony_requirements
+/app/vendor/
 
 # Assets and user uploads
-/web/bundles/
-/web/uploads/
+/app/web/bundles/
+/app/web/uploads/
 
 # PHPUnit
 /app/phpunit.xml
@@ -53,3 +53,16 @@
 
 # Embedded web-server pid file
 /.web-server-pid
+
+###> symfony/framework-bundle ###
+/app/.env.local
+/app/.env.local.php
+/app/.env.*.local
+/app/config/secrets/prod/prod.decrypt.private.php
+/app/public/bundles/
+/app/var/
+###< symfony/framework-bundle ###
+
+###> System Log Files ###
+/var/log
+###< System Log Files ###
