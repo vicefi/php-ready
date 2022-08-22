@@ -1,0 +1,81 @@
+version: "3"
+services:
+    snginx:
+        container_name: sdemo-nginx
+        image: nginx:stable-alpine
+        ports:
+            - "80:8000"
+            - "443:8443"
+        volumes:
+            - ./docker/nginx/etc:/etc/nginx/conf.d
+            - ./docker/nginx/certs:/var/www/certs
+            - .:/var/www/html
+        depends_on:
+            - sphp-fpm
+            - sdb
+        networks:
+            - sdemo_network
+
+    sphp-fpm:
+        container_name: sdemo-php-fpm
+        build:
+            context: ./docker/php-fpm
+        environment:
+            COMPOSER_HOME: /var/www/html
+            PHP_IDE_CONFIG: serverName=localhost
+        depends_on:
+            - sdb
+        volumes:
+            - .:/var/www/html
+            - sdemo-tmp-storage:/tmp
+        networks:
+            - sdemo_network
+
+    sdb:
+        image: mysql:8.0
+        container_name: sdemo-db
+        working_dir: /application
+        command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci, --innodb-file-per-table=1]
+        volumes:
+            - symfony-demo-database:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=ROOT
+            - MYSQL_DATABASE=sdemo
+            - MYSQL_USER=sdemo
+            - MYSQL_PASSWORD=sdemo
+        networks:
+            - sdemo_network
+
+#    redis:
+#        image: redis:alpine
+#        command: [ redis-server, --maxmemory 128mb, --maxmemory-policy volatile-lru, --save "" ]
+#        networks:
+#            - pimcore_network
+
+#    elasticsearch:
+#        image: elasticsearch:7.17.5
+#        container_name: elasticsearch
+#        environment:
+#            - xpack.security.enabled=false
+#            - discovery.type=single-node
+#        ulimits:
+#            memlock:
+#                soft: -1
+#                hard: -1
+#        volumes:
+#            - elasticsearch-data:/usr/share/elasticsearch/data
+#        ports:
+#            - 9200:9200
+#            - 9300:9300
+#        depends_on:
+#            - php-fpm
+#        networks:
+#            - sdemo_network
+
+networks:
+    sdemo_network:
+
+volumes:
+    symfony-demo-database:
+    sdemo-tmp-storage:
+    #elasticsearch-data:
